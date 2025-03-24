@@ -32,6 +32,10 @@ export default {
     '<rootDir>/src/server/common/helpers/errors_message.js',
     '<rootDir>/src/server/common/helpers/catch-fetch-error.js',
     '<rootDir>/src/server/year_pollutiondetails/controller.js',
+    '<rootDir>/src/config/nunjucks/context/context.js',
+    '<rootDir>/src/config/nunjucks/context/context.test.js',
+    '<rootDir>/src/server/common/helpers/errors.test.js',
+
     'index.js'
   ],
   coverageDirectory: '<rootDir>/coverage',
