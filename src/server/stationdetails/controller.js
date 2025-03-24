@@ -22,7 +22,7 @@ const stationDetailsController = {
       const MonitoringstResult = request.yar.get('MonitoringstResult')
       if (MonitoringstResult !== null) {
         const result = MonitoringstResult.getmonitoringstation
-     
+
         for (const x of result) {
           if (x.id === request.params.id) {
             request.yar.set('stationdetails', x)
@@ -31,8 +31,7 @@ const stationDetailsController = {
       }
     }
     const stndetails = request.yar.get('stationdetails')
-  
-    
+
     const pollutantKeys = Object.keys(stndetails.pollutants)
     const updatedTime = ParseDateformat(stndetails.updated)
     const years = [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]

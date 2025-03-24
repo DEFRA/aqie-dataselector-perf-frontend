@@ -6,7 +6,7 @@ const getLocationDetailsController = {
     // const { query } = request
 
     const locationID = request.params.id
-    
+
     const result = request.yar.get('osnameapiresult')
     const fullSearchQuery = request.yar.get('fullSearchQuery').value
     request.yar.set('locationID', request.params.id)
@@ -68,7 +68,7 @@ const getLocationDetailsController = {
           )
           map1.set(ar.name, pollkeys)
         }
-        
+
         if (userLocation) {
           return h.view('monitoring-station/index', {
             pageTitle: english.monitoringStation.pageTitle,
