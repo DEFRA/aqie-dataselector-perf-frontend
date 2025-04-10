@@ -9,9 +9,12 @@ const stationDetailsController = {
     request.yar.set('errorMessage', '')
 
     request.yar.set('downloadresult', '')
+
     // console.log("Selectedyear", request.yar.get('selectedYear'))
     if (request.params.download) {
       request.yar.set('selectedYear', request.params.download)
+      request.yar.set('downloadPollutant', request.params.pollutant)
+      request.yar.set('downloadFrequency', request.params.frequency)
     }
 
     // else
@@ -32,8 +35,13 @@ const stationDetailsController = {
     }
     const stndetails = request.yar.get('stationdetails')
 
-    const pollutantKeys = Object.keys(stndetails.pollutants)
-    const updatedTime = ParseDateformat(stndetails.updated)
+    // const pollutants = stndetails.pollutants
+    //  const pollutantKeys = Object.keys(stndetails.pollutants)
+    const cd = new Date()
+    cd.setDate(cd.getDate() - 1)
+    const formattedDat = cd.toISOString().split('.')[0] + 'Z'
+    request.yar.set('latesttime', formattedDat)
+    const updatedTime = ParseDateformat(formattedDat)
     const years = [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]
     const date = new Date()
     const day = date.getDate()
@@ -74,6 +82,7 @@ const stationDetailsController = {
 
       return finalFormattedDate
     }
+
     const lat = request.yar.get('stationdetails').location.coordinates[0]
     const longitude1 = request.yar.get('stationdetails').location.coordinates[1]
     const maplocation =
@@ -82,6 +91,17 @@ const stationDetailsController = {
 
     const locationMiles = request?.yar?.get('locationMiles')
     const multiplelocID = request?.yar?.get('locationID')
+    // const apiparams = {
+    //   region: stndetails.region,
+    //   siteType: stndetails.siteType,
+    //   sitename: stndetails.name,
+    //   siteId: stndetails.localSiteID,
+    //   latitude: stndetails.location.coordinates[0].toString(),
+    //   longitude: stndetails.location.coordinates[1].toString(),
+    //   year: request.yar.get('selectedYear'),
+    // currentdate
+    // }
+    // NewApi
     const apiparams = {
       region: stndetails.region,
       siteType: stndetails.siteType,
@@ -89,12 +109,14 @@ const stationDetailsController = {
       siteId: stndetails.localSiteID,
       latitude: stndetails.location.coordinates[0].toString(),
       longitude: stndetails.location.coordinates[1].toString(),
+
       year: request.yar.get('selectedYear'),
-      currentdate
+      downloadpollutant: request.yar.get('downloadPollutant'),
+      downloadpollutanttype: request.yar.get('downloadFrequency'),
+      stationreaddate: stndetails.updated
     }
     if (request.params.download) {
       const downloadresult = await Invokedownload(apiparams)
-
       request.yar.set('downloadresult', downloadresult)
       async function Invokedownload() {
         try {
@@ -108,6 +130,14 @@ const stationDetailsController = {
           return error // Rethrow the error so it can be handled appropriately
         }
       }
+      // return h.view('src/server/common/templates/partials/downloads.njk', {
+      //   apiparams,
+      //   years,
+      //   currentdate,
+      //   pollutantKeys,
+      //   selectedYear: request.yar.get('selectedYear'),
+      //   downloadresult: request.yar.get('downloadresult')
+      // });
 
       return h.view('stationdetails/index', {
         pageTitle: english.monitoringStation.pageTitle,
@@ -121,7 +151,7 @@ const stationDetailsController = {
         apiparams,
         years,
         currentdate,
-        pollutantKeys,
+        pollutantKeys: request.yar.get('stationdetails').pollutants,
         selectedYear: request.yar.get('selectedYear'),
         downloadresult: request.yar.get('downloadresult'),
         hrefq:
@@ -144,7 +174,7 @@ const stationDetailsController = {
           apiparams,
           years,
           currentdate,
-          pollutantKeys,
+          pollutantKeys: request.yar.get('stationdetails').pollutants,
           selectedYear: request.yar.get('selectedYear'),
           downloadresult: request.yar.get('downloadresult'),
           hrefq:
@@ -166,7 +196,7 @@ const stationDetailsController = {
           fullSearchQuery,
           apiparams,
           years,
-          pollutantKeys,
+          pollutantKeys: request.yar.get('stationdetails').pollutants,
           currentdate,
           downloadresult: request.yar.get('downloadresult'),
           hrefq: '/location/' + multiplelocID

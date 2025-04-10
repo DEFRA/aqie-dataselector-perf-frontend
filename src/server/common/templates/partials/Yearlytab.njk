@@ -23,7 +23,67 @@
 </ul>
           
           </nav>
-            
-        {# {% include "partials/yearlytable.njk" %}   #}
-        {% include "partials/downloads.njk" %}  
-        
+            <div id="yearlytable-container">
+    {% include "partials/yearlytable.njk" %}
+</div>
+       <div id="download-container">
+    {% include "partials/downloads.njk" %}  
+</div>
+       
+         <script> 
+              
+              let selyear;
+       function updateYear(year) {
+    selyear = year;
+    document.getElementById('year-heading').textContent = `Download data for ${year}`;
+    document.getElementById('airpollution-heading').textContent = `Air pollution levels in ${year}`;
+    const currentDate = new Date();
+    const formattedDate = `${currentDate.getDate()} ${currentDate.toLocaleString('default', { month: 'long' })}`;
+  
+    if( year === '2025' || year === 2025)
+    {
+ document.getElementById('duration_current').textContent = '1 January to ' + formattedDate;
+ }else
+ {
+  document.getElementById('duration_current').textContent = '1 January to 31 December';
+ }
+    var links = document.querySelectorAll('.moj-sub-navigation__link');
+    links.forEach(function(link) {
+        link.removeAttribute('aria-current');
+    });
+
+    // Set aria-current to the clicked link
+    var selectedLink = document.getElementById('link-' + year);
+    if (selectedLink) {
+        selectedLink.setAttribute('aria-current', 'page');
+    }
+const selectedy = year;
+    fetch(`/rendertable/${selectedy}`)
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('yearlytable-container').innerHTML = data;
+            console.log("dataresponse", data);
+        })
+        .catch(error => console.error('Error fetching partial content:', error));
+    // Your existing code to handle the year selection
+   
+   }
+
+// Check if there is already a selected year and set aria-current
+document.addEventListener('DOMContentLoaded', () => {
+
+    const selectedYearElement = document.getElementById('selectedYear');
+    const selectedYear = selectedYearElement ? selectedYearElement.textContent : null;
+    if (selectedYear) {
+        updateYear(selectedYear);
+    }
+   
+});
+
+
+ function updateYear1(year) {
+    console.log("year", year);
+    
+}
+       </script>
+      
